@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D3430621F1B090B00A6E698 /* RegisterPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3430611F1B090B00A6E698 /* RegisterPageViewController.swift */; };
+		4D3430641F1B17E100A6E698 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3430631F1B17E100A6E698 /* LoginViewController.swift */; };
 		4DE51CD91F1AFC83002203EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE51CD81F1AFC83002203EE /* AppDelegate.swift */; };
 		4DE51CDB1F1AFC83002203EE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE51CDA1F1AFC83002203EE /* ViewController.swift */; };
 		4DE51CDE1F1AFC83002203EE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4DE51CDC1F1AFC83002203EE /* Main.storyboard */; };
@@ -26,6 +28,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4D3430611F1B090B00A6E698 /* RegisterPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterPageViewController.swift; sourceTree = "<group>"; };
+		4D3430631F1B17E100A6E698 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		4DE51CD51F1AFC83002203EE /* CollegeFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CollegeFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DE51CD81F1AFC83002203EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4DE51CDA1F1AFC83002203EE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -80,6 +84,8 @@
 				4DE51CD81F1AFC83002203EE /* AppDelegate.swift */,
 				4DE51CDA1F1AFC83002203EE /* ViewController.swift */,
 				4DE51CDC1F1AFC83002203EE /* Main.storyboard */,
+				4D3430631F1B17E100A6E698 /* LoginViewController.swift */,
+				4D3430611F1B090B00A6E698 /* RegisterPageViewController.swift */,
 				4DE51CDF1F1AFC83002203EE /* Assets.xcassets */,
 				4DE51CE11F1AFC83002203EE /* LaunchScreen.storyboard */,
 				4DE51CE41F1AFC83002203EE /* Info.plist */,
@@ -201,8 +207,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D3430641F1B17E100A6E698 /* LoginViewController.swift in Sources */,
 				4DE51CDB1F1AFC83002203EE /* ViewController.swift in Sources */,
 				4DE51CD91F1AFC83002203EE /* AppDelegate.swift in Sources */,
+				4D3430621F1B090B00A6E698 /* RegisterPageViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,6 +420,7 @@
 				4DE51CF41F1AFC83002203EE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4DE51CF51F1AFC83002203EE /* Build configuration list for PBXNativeTarget "CollegeFeedUITests" */ = {
 			isa = XCConfigurationList;
@@ -420,6 +429,7 @@
 				4DE51CF71F1AFC83002203EE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
