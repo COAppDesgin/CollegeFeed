@@ -1,10 +1,14 @@
 <?php
 
-class Conn {
-public static $dbhost = "localhost";
-public static $dbuser = "< provide here user name to your database>;
-public static $dbpass = "< password you use to access database >";
-public static $dbname = " <database name> ";
+$dbhost = "localhost";
+$dbuser = "root";
+$dbpass = "root";
+$dbname = "CollegeFeed";
+
+try{
+	$conn = new PDO("mysql:host=$dbhost;dbname=$dbname;", $dbuser, $dbpass);
+} catch(PDOException $e){
+	die("Connection Failed: ". $e->getMessage());
 }
 
 ?>

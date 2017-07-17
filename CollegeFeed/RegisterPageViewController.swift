@@ -54,53 +54,54 @@ class RegisterPageViewController: UIViewController {
         }
         
         //Store data server side
-        let urlRegister = NSURL(string: "../COAppDesign/Apps/CollegeFeed/CollegeFeed Database/userRegister.php")
+        let urlRegister = NSURL(string: "http://tjauth.dev:8888/userRegister.php")
         let request = NSMutableURLRequest(url: urlRegister! as URL)
         request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         let postString = "email=\(String(describing: userEmail))&password=\(String(describing: userPassword))"
         request.httpBody = postString.data(using: String.Encoding.utf8)
         
-        let task = URLSession.shared.dataTask(with: request as URLRequest) {  data, response, error in
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest){
+            data, response, error in
             
             if error != nil {
-                print("error=\(String(describing: error))")
+                print("error=\(describing: error)")
                 return
             }
-            
-            var err: NSError?
-            var json = JSONSerialization.jsonObject(with: data) as? NSDictionary
-            
-            
+        
+            do {
+            let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
+
+        
             if let parseJSON = json {
-                var resultValue = parseJSON["status"] as? String
+                let resultValue = parseJSON["status"] as! String
                 print("result: \(resultValue)")
                 
                 var isUserRegistered: Bool = false
                 if resultValue == "Success" { isUserRegistered = true }
                 
-                    var messageToDisplay: String = parseJSON["message"] as String!
-                    if !isUserRegistered { messageToDisplay = parseJSON["message"] as String! }
+                var messageToDisplay: String = parseJSON["message"] as! String
+                if !isUserRegistered { messageToDisplay = parseJSON["message"] as! String }
+                
+                DispatchQueue.main.async(execute: {
+                
+                    //Display alert message with configuration
+                    let alert = UIAlertController(title: "Alert", message: messageToDisplay, preferredStyle: UIAlertControllerStyle.alert)
+                    let action = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { action in
+                        self.dismiss(animated: true, completion: nil)
+                    }
                     
-                    DispatchQueue.main.async(execute: {
-                        
-                        //Display alert message with configuration
-                        var alert = UIAlertController(title: "Alert", message: messageToDisplay, preferredStyle: UIAlertControllerStyle.alert)
-                        let action = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { action in
-                            self.dismiss(animated: true, completion: nil)
-                        }
-                        
-                        alert.addAction(action)
-                        self.present(alert, animated: true, completion: nil)
-                    })
-                }
+                    alert.addAction(action)
+                    self.present(alert, animated: true, completion: nil)
+                })
             }
-        
-        task.resume()
-            
+            } catch {
+                print(error)
+            }
         }
-}
-        
+        task.resume()
         
         
 //        //Display alert message with confirmation
@@ -114,7 +115,8 @@ class RegisterPageViewController: UIViewController {
 //        alert.addAction(okAction)
 //        self.present(alert, animated: true, completion: nil)
 //    
-//    }
+    }
+//    
 //    
 //    func displayAlertMessage(userMessage: String) {
 //        let alert = UIAlertController(title: "Alert", message: userMessage, preferredStyle: UIAlertControllerStyle.alert)
@@ -125,7 +127,7 @@ class RegisterPageViewController: UIViewController {
 //        
 //        self.present(alert, animated: true, completion: nil)
 //    }
-
+}
 
 
 
