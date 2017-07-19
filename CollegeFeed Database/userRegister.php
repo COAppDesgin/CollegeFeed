@@ -11,7 +11,7 @@ $returnValue = array();
 
 if(empty($email) || empty($password))
 {
-$returnValue["status"] = "error";
+$returnValue["status"] = "Error";
 $returnValue["message"] = "Missing required field";
 echo json_encode($returnValue);
 return;
@@ -23,7 +23,7 @@ $userDetails = $dao->getUserDetails($email);
 
 if(!empty($userDetails))
 {
-$returnValue["status"] = "error";
+$returnValue["status"] = "Error";
 $returnValue["message"] = "User already exists";
 echo json_encode($returnValue);
 return;

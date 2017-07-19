@@ -34,6 +34,12 @@ class ViewController: UIViewController {
         UserDefaults.standard.set(false, forKey: "isUserLoggedIn")
         UserDefaults.standard.synchronize()
         self.performSegue(withIdentifier: "loginView", sender: self)
+        
+        //        let loginViewController = self.storyboard!.instantiateViewController(withIdentifier: "loginView") as! LoginViewController
+        //        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        //        appDelegate.window?.rootViewController = loginViewController
+        //        appDelegate.window?.makeKeyAndVisible()
+
     }
 }
 

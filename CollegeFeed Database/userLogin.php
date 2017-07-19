@@ -8,7 +8,7 @@ $returnValue = array();
 
 if(empty($email) || empty($password))
 {
-$returnValue["status"] = "error";
+$returnValue["status"] = "Error";
 $returnValue["message"] = "Missing required field";
 echo json_encode($returnValue);
 return;
@@ -27,7 +27,7 @@ $returnValue["message"] = "User is registered";
 echo json_encode($returnValue);
 } else {
 
-$returnValue["status"] = "error";
+$returnValue["status"] = "Error";
 $returnValue["message"] = "User is not found";
 echo json_encode($returnValue);
 }

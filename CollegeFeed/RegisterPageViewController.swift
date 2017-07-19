@@ -32,101 +32,95 @@ class RegisterPageViewController: UIViewController {
         let userPassword = userPasswordTextField.text
         let userRepeatPassword = userRepeatPasswordTextField.text
         
-        //Check for empty fields
-        
-        if userEmail!.isEmpty || userPassword!.isEmpty || userRepeatPassword!.isEmpty {
-            
-            //Display alert message
-            
-//            displayAlertMessage(userMessage: "All fields are required.")
-            return;
-        
-        }
-        
         //Check if passwords match
         if userPassword != userRepeatPassword {
             
             //Display alert message
-            
-//            displayAlertMessage(userMessage: "Passwords do not match")
-            return;
+            displayAlertMessage(userMessage: "Passwords do not match")
+            return
             
         }
         
-        //Store data server side
-        let urlRegister = NSURL(string: "http://tjauth.dev:8888/userRegister.php")
-        let request = NSMutableURLRequest(url: urlRegister! as URL)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        // Send user data to server side
         
-        let postString = "email=\(String(describing: userEmail))&password=\(String(describing: userPassword))"
+        let myUrl = NSURL(string:"http://tjauth.dev:8888/userRegister.php")
+        let request = NSMutableURLRequest(url: myUrl! as URL)
+        request.httpMethod = "POST"
+        
+        let postString = "email=\(userEmail!)&password=\(userPassword!)"
+        
         request.httpBody = postString.data(using: String.Encoding.utf8)
+        
         
         
         let task = URLSession.shared.dataTask(with: request as URLRequest){
             data, response, error in
             
             if error != nil {
-                print("error=\(describing: error)")
+                print("error=\(String(describing: error))")
                 return
             }
-        
+            
+            
             do {
-            let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
-
-        
-            if let parseJSON = json {
-                let resultValue = parseJSON["status"] as! String
-                print("result: \(resultValue)")
+                let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
                 
-                var isUserRegistered: Bool = false
-                if resultValue == "Success" { isUserRegistered = true }
                 
-                var messageToDisplay: String = parseJSON["message"] as! String
-                if !isUserRegistered { messageToDisplay = parseJSON["message"] as! String }
-                
-                DispatchQueue.main.async(execute: {
-                
-                    //Display alert message with configuration
-                    let alert = UIAlertController(title: "Alert", message: messageToDisplay, preferredStyle: UIAlertControllerStyle.alert)
-                    let action = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { action in
-                        self.dismiss(animated: true, completion: nil)
-                    }
+                if let parseJSON = json {
+                    let resultValue:String = parseJSON["status"] as! String
+                    print("result: \(resultValue)")
                     
-                    alert.addAction(action)
-                    self.present(alert, animated: true, completion: nil)
-                })
+                    var isUserRegistered: Bool = false
+                    if(resultValue == "Success") { isUserRegistered = true }
+                    
+                    var messageToDisplay: String = parseJSON["message"] as! String
+                    if (!isUserRegistered) { messageToDisplay = parseJSON["message"] as! String }
+                    
+                    DispatchQueue.main.async(execute: {
+                        
+                        //Display alert message with confirmation
+                        let myAlert = UIAlertController(title: resultValue, message: messageToDisplay, preferredStyle: .alert)
+                        let okAction = UIAlertAction(title: "Ok", style: .default) { action in
+                            
+                            if(resultValue == "Success") {
+                                self.dismiss(animated: true, completion: nil)
+                            }
+                        }
+                        
+                        myAlert.addAction(okAction)
+                        self.present(myAlert, animated: true, completion: nil)
+                        
+                    })
+                }
+                
+                
+            } catch let error as NSError {
+                var err: NSError?
+                err = error
+                print(err as NSError!)
             }
-            } catch {
-                print(error)
-            }
+            
         }
         task.resume()
         
-        
-//        //Display alert message with confirmation
-//        
-//        let alert = UIAlertController(title: "Success", message: "Registration was successful!", preferredStyle: UIAlertControllerStyle.alert)
-//        
-//        let okAction = UIAlertAction(title: "Ok", style: UIAlertActionStyle.default) { action in
-//            self.dismiss(animated: true)
-//        }
-//        
-//        alert.addAction(okAction)
-//        self.present(alert, animated: true, completion: nil)
-//    
     }
-//    
-//    
-//    func displayAlertMessage(userMessage: String) {
-//        let alert = UIAlertController(title: "Alert", message: userMessage, preferredStyle: UIAlertControllerStyle.alert)
-//        
-//        let action = UIAlertAction(title: "Go", style: UIAlertActionStyle.default, handler: nil)
-//        
-//        alert.addAction(action)
-//        
-//        self.present(alert, animated: true, completion: nil)
-//    }
+
+    
+    func displayAlertMessage(userMessage: String) {
+        let alert = UIAlertController(title: "Error", message: userMessage, preferredStyle: UIAlertControllerStyle.alert)
+        
+        let action = UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil)
+        
+        alert.addAction(action)
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    
+    @IBAction func closeRegisterPageButtonTapped(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
 }
 
 

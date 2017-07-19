@@ -30,53 +30,89 @@ class LoginViewController: UIViewController {
         let userEmail = userEmailTextField.text
         let userPassword = userPasswordTextField.text
         
-        let userEmailStored = UserDefaults.standard.string(forKey: "userEmail")
-        let userPasswordStored = UserDefaults.standard.string(forKey: "userPassword")
-        
-        if userEmailStored == userEmail {
-            if userPasswordStored == userPassword {
-                //Login successful
+        if((userPassword?.isEmpty)! || (userEmail?.isEmpty)!) {
                 
-                UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
-                UserDefaults.standard.synchronize()
-                self.dismiss(animated: true, completion: nil)
-            } else {
-                let alert = UIAlertController(title: "Alert", message: "Credentials do not match.", preferredStyle: UIAlertControllerStyle.alert)
-                
-                let okAction = UIAlertAction(title: "Ok", style: UIAlertActionStyle.default)
-                
-                alert.addAction(okAction)
-                self.present(alert, animated: true, completion: nil)
-            }
-        } else if userEmail!.isEmpty {
-            
-            let alert = UIAlertController(title: "Alert", message: "Please enter a valid email address.", preferredStyle: UIAlertControllerStyle.alert)
-            
-            let okAction = UIAlertAction(title: "Ok", style: UIAlertActionStyle.default)
-            
-            alert.addAction(okAction)
-            self.present(alert, animated: true, completion: nil)
-        
-        } else {
-            let alert = UIAlertController(title: "Alert", message: "Email is not found.", preferredStyle: UIAlertControllerStyle.alert)
-            
-            let okAction = UIAlertAction(title: "Ok", style: UIAlertActionStyle.default)
-            
-            alert.addAction(okAction)
-            self.present(alert, animated: true, completion: nil)
+            //Display alert message
+            displayAlertMessage(userMessage: "Missing required field")
+            return
         }
+        
+        //Send user data serverside
+        let myUrl = NSURL(string:"http://tjauth.dev:8888/userLogin.php")
+        let request = NSMutableURLRequest(url: myUrl! as URL)
+        request.httpMethod = "POST"
+        
+        let postString = "email=\(userEmail!)&password=\(userPassword!)"
+        
+        request.httpBody = postString.data(using: String.Encoding.utf8)
+        
+        
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest){
+            data, response, error in
+            
+            if error != nil {
+                print("error=\(String(describing: error))")
+                return
+            }
+            
+            
+            do {
+                let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? NSDictionary
+                
+                
+                if let parseJSON = json {
+                    let resultValue:String = parseJSON["status"] as! String
+                    print("result: \(resultValue)")
+                    
+                    if (resultValue == "Success") {
+                        //Login is successful
+                        UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
+                        UserDefaults.standard.synchronize()
+                        
+                        self.dismiss(animated: true, completion: nil)
+                    }
+                    
+//                    let messageToDisplay: String = parseJSON["message"] as! String
+////                    if (!isUserRegistered) { messageToDisplay = parseJSON["message"] as! String }
+//                    
+//                    if (resultValue != "Success") {
+//                        DispatchQueue.main.async(execute: {
+//                            
+//                            //Display alert message with confirmation
+//                                let myAlert = UIAlertController(title: resultValue, message: messageToDisplay, preferredStyle: .alert)
+//                                let okAction = UIAlertAction(title: "Ok", style: .default) { action in
+//                                
+//                            }
+//                            
+//                            myAlert.addAction(okAction)
+//                            self.present(myAlert, animated: true, completion: nil)
+//
+//                        })
+//                    }
+                }
+                
+                
+            } catch let error as NSError {
+                var err: NSError?
+                err = error
+                print(err as NSError!)
+            }
+            
+        }
+        task.resume()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func displayAlertMessage(userMessage: String) {
+        let alert = UIAlertController(title: "Error", message: userMessage, preferredStyle: UIAlertControllerStyle.alert)
+        
+        let action = UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil)
+        
+        alert.addAction(action)
+        
+        self.present(alert, animated: true, completion: nil)
     }
-    */
+    
 
 }
 
