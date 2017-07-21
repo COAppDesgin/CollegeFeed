@@ -17,6 +17,7 @@ class RegisterPageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "background")!)
 
         // Do any additional setup after loading the view.
     }
@@ -117,9 +118,10 @@ class RegisterPageViewController: UIViewController {
     }
     
     
-    @IBAction func closeRegisterPageButtonTapped(_ sender: UIButton) {
+    @IBAction func exitRegisterPageButtonPressed(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
     }
+
     
 }
 
