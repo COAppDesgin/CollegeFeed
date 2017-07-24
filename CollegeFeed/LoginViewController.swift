@@ -9,7 +9,6 @@
 import UIKit
 import Firebase
 
-@IBDesignable
 
 class LoginViewController: UIViewController {
     
@@ -33,6 +32,9 @@ class LoginViewController: UIViewController {
     
     @IBAction func loginButtonTapped(_ sender: UIButton) {
         
+        userEmailTextField.endEditing(true)
+        userPasswordTextField.endEditing(true)
+        
         let userEmail = userEmailTextField.text
         let userPassword = userPasswordTextField.text
         
@@ -52,6 +54,15 @@ class LoginViewController: UIViewController {
                 }
                 
                 print("Successfully logged in!")
+                UserDefaults.standard.set(true, forKey: "isUserLoggedIn")
+                UserDefaults.standard.synchronize()
+                
+                let myViewController: TabBarController = self.storyboard!.instantiateViewController(withIdentifier: "TabBarController") as! TabBarController
+                let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                appDelegate.window?.rootViewController = myViewController
+                appDelegate.window?.makeKeyAndVisible()
+                
+                
                 self.dismiss(animated: true, completion: nil)
                 
             })
@@ -68,7 +79,12 @@ class LoginViewController: UIViewController {
         
         self.present(alert, animated: true, completion: nil)
     }
-    
 
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
 }
+
+
 

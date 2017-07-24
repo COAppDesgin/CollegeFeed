@@ -30,6 +30,14 @@ class RegisterViewController: UIViewController {
     
     @IBAction func registerButtonPressed(_ sender: Any) {
         
+        userEmailTextField.endEditing(true)
+        userPasswordTextField.endEditing(true)
+        userRepeatPasswordTextField.endEditing(true)
+        userNameTextField.endEditing(true)
+        
+        let userProfile: String = ""
+        let userBio: String = ""
+        
         guard let userName = userNameTextField.text, let userEmail = userEmailTextField.text, let userPassword = userPasswordTextField.text, let userRepeatPassword = userRepeatPasswordTextField.text else {
             print("Error")
             return
@@ -45,7 +53,7 @@ class RegisterViewController: UIViewController {
         }
         
         Auth.auth().createUser(withEmail: userEmail, password: userPassword, completion: { (user: User?, error) in
-            
+
             if error != nil {
                 print(error!)
                 return
@@ -56,7 +64,9 @@ class RegisterViewController: UIViewController {
             let ref = Database.database().reference(fromURL: "https://collegefeed-de9f0.firebaseio.com/")
             let usersReference = ref.child("users").child(uid)
             let values = ["name": userName,
-                          "email": userEmail]
+                          "email": userEmail,
+                          "picture": userProfile,
+                          "bio": userBio]
             usersReference.updateChildValues(values, withCompletionBlock: { (err, ref) in
                 if err != nil {
                     print(err!)
@@ -87,8 +97,13 @@ class RegisterViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+
     
 }
+
 
 
 

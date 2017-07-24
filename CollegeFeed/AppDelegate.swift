@@ -14,7 +14,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         FirebaseApp.configure()
@@ -25,28 +24,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        window?.rootViewController = UINavigationController(rootViewController: TabBarController())
         
         // Override point for customization after application launch.
-//        
-//        var LoginViewController = self.window!.rootViewController
-//        let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-//        
-//        let isUserLoggedIn: Bool = UserDefaults.standard.bool(forKey: "isUserLoggedIn")
-//        
-//        if(!isUserLoggedIn) {
-//            
-//            let loginViewController = mainStoryboard.instantiateViewController(withIdentifier: "loginView") as! LoginViewController
-//            
-//            window!.rootViewController = loginViewController
-//            window!.makeKeyAndVisible()
-//        
-//        } else {
-//            
-//            let protectedPage = mainStoryboard.instantiateViewController(withIdentifier: "ViewController") as! TabBarController
-//            
-//            window!.rootViewController = protectedPage
-//            window!.makeKeyAndVisible()
-//            
-//        }
-//
+        
+        _ = self.window!.rootViewController
+        let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        
+        let isUserLoggedIn: Bool = UserDefaults.standard.bool(forKey: "isUserLoggedIn")
+        
+        if(!isUserLoggedIn) {
+            
+            let loginViewController = mainStoryboard.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
+            
+            window!.rootViewController = loginViewController
+            window!.makeKeyAndVisible()
+        
+        } else {
+            
+            let protectedPage = mainStoryboard.instantiateViewController(withIdentifier: "TabBarController") as! TabBarController
+            
+            window!.rootViewController = protectedPage
+            window!.makeKeyAndVisible()
+            
+        }
+
         return true
     }
 

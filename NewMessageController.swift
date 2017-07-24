@@ -1,46 +1,29 @@
 //
-//  MessageTableViewController.swift
+//  NewMessageController.swift
 //  
 //
-//  Created by Tyler Jordan Cagle on 7/20/17.
+//  Created by Tyler Jordan Cagle on 7/21/17.
 //
 //
 
 import UIKit
-import Firebase
 
-class MessageTableViewController: UITableViewController {
+class NewMessageController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.leftBarButtonItem = self.editButtonItem
-        
+
+        // Uncomment the following line to preserve selection between presentations
+        // self.clearsSelectionOnViewWillAppear = false
+
+        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    func checkIfUserIsLoggedIn() {
-        if Auth.auth().currentUser?.uid == nil {
-            self.performSegue(withIdentifier: "loginView", sender: self)
-        } else {
-            let uid = Auth.auth().currentUser?.uid
-            Database.database().reference().child("users").child(uid!).observeSingleEvent(of: .value, with: { (snapshot) in
-                print(snapshot)
-                
-                if let dictionary = snapshot.value as? [String: AnyObject] {
-                    self.navigationItem.title = dictionary["name"] as? String
-                }
-                
-                
-            }, withCancel: nil)
-            
-        }
-    }
-    
-    
 
     // MARK: - Table view data source
 
@@ -52,13 +35,6 @@ class MessageTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return 0
-    }
-    
-    
-    @IBAction func newMessageIconPressed(_ sender: Any) {
-        let newMessageController = NewMessageController()
-        let navController = UINavigationController(rootViewController: newMessageController)
-        present(navController, animated: true, completion: nil)
     }
 
     /*
