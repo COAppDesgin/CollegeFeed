@@ -10,6 +10,10 @@ import UIKit
 import Firebase
 
 class AccountViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    let cellId = "cellId"
+    
+    var users = [Users]()
 
     @IBOutlet weak var profileImageView: UIImageView!
     
@@ -23,7 +27,9 @@ class AccountViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         profileImageView.image = UIImage(named: "profile")
         profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectProfileImageView)))
-        profileImageView.isUserInteractionEnabled = true
+        //profileImageView.isUserInteractionEnabled = true
+        
+        fetchUser()
 
     }
     
@@ -81,29 +87,44 @@ class AccountViewController: UIViewController, UIImagePickerControllerDelegate, 
     
         dismiss(animated: true, completion: nil)
         
+        let user = Users()
+        profileImageView.image = UIImage(named: "profile")
+        
+        if let userProfileImageURL = user.picture {
+            let url = URL(string: userProfileImageURL)
+            URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
+                
+                if error != nil {
+                    print(error!)
+                    return
+                }
+                
+                DispatchQueue.main.async(execute: {
+                    self.profileImageView.image = UIImage(data: data!)
+                })
+                
+            }).resume()
+        }
+        return
+    }
+    
+    func fetchUser() {
         Database.database().reference().child("users").observe(.childAdded, with: { (snapshot) in
             
-        if (snapshot.value as? [String: AnyObject]) != nil {
-            let user = Users()
-        
-            if let userProfileImageURL = user.picture {
-                let url = URL(string: userProfileImageURL)
-                URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
-                    
-                    if error != nil {
-                        print(error!)
-                        return
-                    }
-                    
-                    DispatchQueue.main.async(execute: {
-                        self.profileImageView.image = UIImage(data: data!)
-                    })
-                    
-                }).resume()
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let user = Users()
+                
+                user.setValuesForKeys(dictionary)
+                self.users.append(user)
+                
+                
+                
+                print(user.name!, user.email!)
             }
-            return
-        }
-        })
+            
+            
+            print("Users found")
+        }, withCancel: nil)
     }
     
     private func registerUserIntoDatabaseWithUID(uid: String, values: [String: AnyObject]) {
