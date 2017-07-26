@@ -31,6 +31,7 @@ class NewMessageController: UITableViewController {
             
             if let dictionary = snapshot.value as? [String: AnyObject] {
                 let user = Users()
+                user.id = snapshot.key
                 
                 user.setValuesForKeys(dictionary)
                 self.users.append(user)
@@ -38,12 +39,7 @@ class NewMessageController: UITableViewController {
                 DispatchQueue.main.async(execute: {
                     self.tableView.reloadData()
                 })
-                
-                print(user.name!, user.email!)
             }
-            
-            
-            print("Users found")
         }, withCancel: nil)
     }
     
@@ -56,48 +52,36 @@ class NewMessageController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! UserCell
         
         let user = users[indexPath.row]
         cell.textLabel?.text = user.name
         cell.detailTextLabel?.text = user.email
-        
         cell.imageView?.image = UIImage(named: "profile")
         
-        if let userProfileImageURL = user.picture {
-            let url = URL(string: userProfileImageURL)
-            URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
-                
-                if error != nil {
-                print(error!)
-                return
-                }
-                
-                DispatchQueue.main.async(execute: {
-                    cell.imageView?.image = UIImage(data: data!)
-                })
-                
-                }).resume()
+        if let profileImageUrl = user.picture {
+            if profileImageUrl == "" {
+                cell.imageView?.image = UIImage(named: "profile")
+            } else {
+                cell.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
+            }
         }
         
         return cell
-        
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 72
     }
+    
+    var messagesController: MessageTableViewController?
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        dismiss(animated: true) {
+            let user = self.users[indexPath.row]
+            self.messagesController?.showChatControllerForUser(user: user)
+        }
+    }
+    
 }
 
-class UserCell: UITableViewCell {
-    
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implimented yet")
-    }
-    
-}

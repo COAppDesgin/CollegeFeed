@@ -9,6 +9,7 @@
 import UIKit
 
 class Users: NSObject {
+    var id: String?
     var bio: String?
     var name: String?
     var email: String?

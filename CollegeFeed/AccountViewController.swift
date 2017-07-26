@@ -9,27 +9,30 @@
 import UIKit
 import Firebase
 
+// Firebase services
+var database: Database!
+var storage: Storage!
+
 class AccountViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    let cellId = "cellId"
+    var loginController: LoginViewController?
     
+    let cellId = "cellId"
     var users = [Users]()
 
     @IBOutlet weak var profileImageView: UIImageView!
+    @IBOutlet weak var profileName: UILabel!
+    @IBOutlet weak var profileEmail: UILabel!
     
-    var picker = UIImagePickerController()
+        var picker = UIImagePickerController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
-        
-        
-        profileImageView.image = UIImage(named: "profile")
-        profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectProfileImageView)))
-        //profileImageView.isUserInteractionEnabled = true
-        
-        fetchUser()
+
+        loadProfileImage()
+        fetchUserAndSetup()
 
     }
     
@@ -59,20 +62,17 @@ class AccountViewController: UIViewController, UIImagePickerControllerDelegate, 
             profileImageView.image = selectedImage
         }
         
-        //        let uid = Auth.auth().currentUser?.uid
-        //        let data = UIImageJPEGRepresentation(profileImageView.image!, 0.6)
-        //        let ref = Database.database().reference(fromURL: "https://collegefeed-de9f0.firebaseio.com/")
-        //        ref.child("users").child(uid!).setValue(["profilePicture": data])
-        //
-        
         guard let uid = Auth.auth().currentUser?.uid else {
             return
         }
         
         let imageName = NSUUID().uuidString
         
-        let storageRef = Storage.storage().reference().child("profile_images").child("\(imageName).png")
-        if let uploadData = UIImagePNGRepresentation(self.profileImageView.image!) {
+        let storageRef = Storage.storage().reference().child("profile_images").child("\(imageName).jpg")
+        
+        if let uploadData = UIImageJPEGRepresentation(self.profileImageView.image!, 0.1) {
+        
+//        if let uploadData = UIImagePNGRepresentation(self.profileImageView.image!) {
             storageRef.putData(uploadData, metadata: nil, completion: {  (metadata, error) in
                 if error != nil {
                     print(error!)
@@ -86,46 +86,32 @@ class AccountViewController: UIViewController, UIImagePickerControllerDelegate, 
         }
     
         dismiss(animated: true, completion: nil)
-        
-        let user = Users()
-        profileImageView.image = UIImage(named: "profile")
-        
-        if let userProfileImageURL = user.picture {
-            let url = URL(string: userProfileImageURL)
-            URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
-                
-                if error != nil {
-                    print(error!)
-                    return
-                }
-                
-                DispatchQueue.main.async(execute: {
-                    self.profileImageView.image = UIImage(data: data!)
-                })
-                
-            }).resume()
-        }
-        return
     }
     
-    func fetchUser() {
-        Database.database().reference().child("users").observe(.childAdded, with: { (snapshot) in
-            
-            if let dictionary = snapshot.value as? [String: AnyObject] {
-                let user = Users()
+    func fetchUserAndSetup() {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            return
+        }
+        Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let dictionary = snapshot.value as? [String:AnyObject] {
+                let userName = dictionary["name"] as? String
+                let userEmail = dictionary["email"] as? String
+                let userPicture = dictionary["picture"] as? String
                 
-                user.setValuesForKeys(dictionary)
-                self.users.append(user)
+                if userPicture == "" {
+                    self.profileImageView.image = UIImage(named: "profileprofile")
+                } else {
+                    self.profileImageView.loadImageUsingCacheWithUrlString(userPicture!)
+                }
                 
-                
-                
-                print(user.name!, user.email!)
+                self.profileName.text = userName
+                self.profileEmail.text = userEmail
             }
-            
-            
-            print("Users found")
         }, withCancel: nil)
+        return 
     }
+  
+    
     
     private func registerUserIntoDatabaseWithUID(uid: String, values: [String: AnyObject]) {
         let ref = Database.database().reference(fromURL: "https://collegefeed-de9f0.firebaseio.com/")
@@ -160,16 +146,21 @@ class AccountViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         let viewController:UIViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
         //let loginController = LoginViewController()
+        
         present(viewController, animated: true, completion: nil)
     }
     
-    
-//    @IBAction func logoutButtonPressed(_ sender: UIBarButtonItem) {
-//        UserDefaults.standard.set(false, forKey: "isUserLoggedIn")
-//        UserDefaults.standard.synchronize()
-//        self.performSegue(withIdentifier: "loginView", sender: self)
-//    }
-    
+    func loadProfileImage() {
+        profileImageView.image = UIImage(named: "profileprofile")
+        profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectProfileImageView)))
+        profileImageView.isUserInteractionEnabled = true
+        profileImageView.layer.borderWidth = 5
+        profileImageView.layer.masksToBounds = false
+        profileImageView.layer.borderColor = UIColor.init(red: 89/255, green: 89/255, blue: 89/255, alpha: 1).cgColor
+        profileImageView.layer.cornerRadius = profileImageView.frame.height/2
+        profileImageView.clipsToBounds = true
+    }
+
     @IBAction func unwindToAccount(segue: UIStoryboardSegue) {}
 
 }
