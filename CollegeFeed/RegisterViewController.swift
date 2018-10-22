@@ -52,14 +52,14 @@ class RegisterViewController: UIViewController {
             
         }
         
-        Auth.auth().createUser(withEmail: userEmail, password: userPassword, completion: { (user: User?, error) in
+        Auth.auth().createUser(withEmail: userEmail, password: userPassword, completion: { (user, error) in
 
             if error != nil {
                 print(error!)
                 return
             }
             
-            guard let uid = user?.uid else {return}
+            guard let uid = user?.user.uid else {return}
             
             let ref = Database.database().reference(fromURL: "https://collegefeed-de9f0.firebaseio.com/")
             let usersReference = ref.child("users").child(uid)

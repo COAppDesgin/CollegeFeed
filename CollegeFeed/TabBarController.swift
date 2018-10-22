@@ -21,7 +21,7 @@ class TabBarController: UITabBarController {
         
     }
     
-    func handleLogout() {
+    @objc func handleLogout() {
         self.performSegue(withIdentifier: "loginView", sender: self)
     }
 

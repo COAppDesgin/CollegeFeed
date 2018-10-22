@@ -36,7 +36,7 @@ class AccountViewController: UIViewController, UIImagePickerControllerDelegate, 
 
     }
     
-    func handleSelectProfileImageView() {
+    @objc func handleSelectProfileImageView() {
         let picker = UIImagePickerController()
         
         picker.delegate = self
@@ -78,10 +78,14 @@ class AccountViewController: UIViewController, UIImagePickerControllerDelegate, 
                     print(error!)
                     return
                 }
-                if let profileImageURL = metadata?.downloadURL()?.absoluteString {
+                storageRef.downloadURL(completion: { (url, error) in
+                    guard let profileImageURL = url?.absoluteString else {
+                        print("Error finding image url:", error!)
+                        return
+                    }
                     let values = ["picture": profileImageURL]
                     self.registerUserIntoDatabaseWithUID(uid: uid, values: values as [String : AnyObject])
-                }
+                })
             })
         }
     
@@ -136,7 +140,7 @@ class AccountViewController: UIViewController, UIImagePickerControllerDelegate, 
         // Dispose of any resources that can be recreated.
     }
 
-    func handleLogout() {
+    @objc func handleLogout() {
         
         do {
             try Auth.auth().signOut()

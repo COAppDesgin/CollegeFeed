@@ -16,11 +16,22 @@ class Message: NSObject {
     var timestamp: NSNumber?
     var toID: String?
     
+    var imageURL: String?
+    var imageHeight: NSNumber?
+    var imageWidth: NSNumber?
+    
+    var videoURL: String?
+    
     init(dictionary: [String: Any]) {
-        self.fromID = dictionary["fromID"] as? String
-        self.text = dictionary["text"] as? String
-        self.timestamp = dictionary["timestamp"] as? NSNumber
-        self.toID = dictionary["toID"] as? String
+        super.init()
+        fromID = dictionary["fromID"] as? String
+        text = dictionary["text"] as? String
+        timestamp = dictionary["timestamp"] as? NSNumber
+        toID = dictionary["toID"] as? String
+        imageURL = dictionary["imageURL"] as? String
+        imageHeight = dictionary["imageHeight"] as? NSNumber
+        imageWidth = dictionary["imageWidth"] as? NSNumber
+        videoURL = dictionary["videoURL"] as? String
     }
     
     func chatPartnerID() -> String? {
