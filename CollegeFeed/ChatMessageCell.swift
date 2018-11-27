@@ -59,7 +59,7 @@ class ChatMessageCell: UICollectionViewCell {
     let textView: UITextView = {
         let tv = UITextView()
         tv.text = "SAMPLE"
-        tv.font = UIFont.systemFont(ofSize: 16)
+        tv.font = Fonts.SSPRegularH5
         tv.translatesAutoresizingMaskIntoConstraints = false
         tv.backgroundColor = UIColor.clear
         tv.textColor = UIColor.white
@@ -71,7 +71,7 @@ class ChatMessageCell: UICollectionViewCell {
     
     let bubbleView: UIView = {
         let view = UIView()
-        view.backgroundColor = Theme.PRIMARY_DARK_COLOR
+        view.backgroundColor = Theme.SEA_BLUE
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 18
         view.clipsToBounds = true
@@ -109,7 +109,7 @@ class ChatMessageCell: UICollectionViewCell {
         button.backgroundColor = .clear
         button.setTitle("Closed", for: .normal)
         button.titleLabel?.textColor = Theme.BLACK
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .light)
+        button.titleLabel?.font = Fonts.SSPLightH3
         
         return button
     }()
@@ -120,7 +120,7 @@ class ChatMessageCell: UICollectionViewCell {
         button.backgroundColor = .clear
         button.setTitle("Open", for: .normal)
         button.titleLabel?.textColor = Theme.BLACK
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .light)
+        button.titleLabel?.font = Fonts.SSPLightH3
         
         return button
     }()
