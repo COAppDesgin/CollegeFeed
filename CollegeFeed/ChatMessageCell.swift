@@ -149,6 +149,8 @@ class ChatMessageCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        self.backgroundColor = Theme.WHITE
+        
         addSubview(bubbleView)
         addSubview(textView)
         bubbleView.addSubview(messageImageView)
